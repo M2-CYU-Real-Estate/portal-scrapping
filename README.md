@@ -1,6 +1,8 @@
 # portal-scrapping
-The classes are under le spider folder. For each site that we scrape we created a file.
-
+The classes are under le spiders folder. For each site that we scrape we created a file.
+~~~
+/dataScraping/dataScrapin/spiders
+~~~
 To run the project you need to enter in terminal:
 
 ~~~
