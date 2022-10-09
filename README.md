@@ -1,4 +1,5 @@
 # portal-scrapping
+The classes are under le spider folder. For each site that we scrape we created a file.
 
 To run the project you need to enter in terminal:
 
