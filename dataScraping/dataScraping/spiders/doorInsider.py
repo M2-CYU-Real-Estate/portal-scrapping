@@ -6,7 +6,7 @@ import logging
 
 DEBUG = False
 FIELDS = [
-    'id', 'title', 'prix','prixm2','typeVente','ville','codePostale','img','description', 'surface', 'piece','etage', 'charge','annee']
+    'id','ref', 'title', 'prix','lots','typeVente','ville','codePostale','img','description', 'surface','annee']
 
 class Door(CrawlSpider):
     name = 'door'
@@ -29,22 +29,22 @@ class Door(CrawlSpider):
                        follow=True,
                        )
     rules = (rule_recipe, rule_next)
+    ref = 0
     index = 0
     prix = 0
     prixm2 = 0
     title = ""
     img=""
     typeVente = ""
-    piece=""
     ville=""
     codePostale=""
     surface=""
-    etage = ""
+    lot = ""
     annee = ""
-    charge = ""
     description=""
     def parse_item(self, response):
-        try:
+           self.ref =  response.xpath('.//div[@class="property-header-type-address-type-ref"]/text()').getall()
+           self.ref = re.sub('\W+','', self.ref[1])
            self.title = response.css('h1.page-title::text').get()
            self.typeVente = response.xpath('.//div[@class="field field--name-field-type-property field--type-entity-reference field--label-visually_hidden"]/div/text()').getall()
            self.typeVente = self.typeVente[1]
@@ -54,37 +54,38 @@ class Door(CrawlSpider):
            self.codePostale = adr[1]
            self.img = response.xpath('.//a[@class="photoswipe"]/@href')[0].get()
            self.surface = response.xpath('.//div[@class="field field--name-field-surface field--type-float field--label-inline clearfix"]/div/span/text()').get()
-           self.surface = self.surface + " " + "m²"
-           self.piece = response.xpath('.//div[@class="field field--name-field-number-of-rooms field--type-integer field--label-inline clearfix"]/div/text()')[1].get()
-           self.etage = response.xpath('.//div[@class="field field--name-field-floor field--type-integer field--label-inline clearfix"]/div/text()')[1].get()
-           self.annee = response.xpath('.//div[@class="field field--name-field-date-of-contruction field--type-integer field--label-inline clearfix"]/div/text()')[1].get()
-           self.charge = response.xpath('.//div[@class="field field--name-extra-field-tax field--type-extra-field field--label-hidden field__items"]/div/text()').get()
+           self.surface = self.surface
+
+           try:
+                self.piece = response.xpath('.//div[@class="field field--name-field-number-of-rooms field--type-integer field--label-inline clearfix"]/div/text()')[1].get()
+                self.lot = response.xpath('.//div[@class="field field--name-field-lots field--type-integer field--label-inline clearfix"]/div/text()')[1].get()
+                self.annee = response.xpath('.//div[@class="field field--name-field-date-of-contruction field--type-integer field--label-inline clearfix"]/div/text()')[1].get()
+           except:
+               self.piece=0
+               self.lot = 0
+               self.annee = ""
            self.description = response.xpath('.//div[@class="field field--name-field-description field--type-string-long field--label-visually_hidden"]/div/text()')[1].get()
-           self.prix = response.xpath('.//div[@class="field field--name-extra-field-display-price field--type-extra-field field--label-hidden field__items"]/div/text()').get()
-           getPrixm2 = response.xpath('.//div[@class="field field--name-extra-field-price-per-square-meter field--type-extra-field field--label-hidden field__items"]/div/text()').get()
-           getPrixm2 = getPrixm2.split()
-           self.prixm2 = getPrixm2[1] + ''+ getPrixm2[2]
-           print(self.prix)
-        except:
-            print("error: ", self.index)
-        self.index += 1
-        data = {
+           try:
+                self.prix = response.xpath('.//div[@class="field field--name-extra-field-display-price field--type-extra-field field--label-hidden field__items"]/div/text()').get()
+                self.prix = re.sub('\W+','', self.prix)
+           except:
+               pass
+           self.index += 1
+           data = {
             'id': self.index,
+            'ref': self.ref,
             'title': self.title,
             'prix': self.prix,
-            'prixm2': self.prixm2,
             'typeVente': self.typeVente,
             'ville': self.ville,
             'codePostale': self.codePostale,
             'img': self.img,
             'surface': self.surface,
             'piece': self.piece,
-            'etage': self.etage,
             'annee': self.annee,
-            'charge': self.charge,
             'description': self.description
-        }
+            }
 
-        dataDic = {}
-        dataDic.update(data)
-        yield dataDic
+           dataDic = {}
+           dataDic.update(data)
+           yield dataDic
