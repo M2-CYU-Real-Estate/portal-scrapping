@@ -29,7 +29,6 @@ class Door(CrawlSpider):
                        follow=True)
     rules = (rule_extract, rule_next)
 
-    index = 0
     ref = 0
     prix = 0
     title = ""
@@ -69,21 +68,19 @@ class Door(CrawlSpider):
                 getAnnee = response.css('div.feature-bloc')
                 self.annee = getAnnee[1].xpath('.//ul/li/div[@class="feature-bloc-content-specification-content-response"]/div/text()')[5].get()
         except:
-            print("error: ", self.index)
+            print("error")
         if self.title != None:
-            self.index += 1
             data = {
-                'id': self.index,
                 'ref': self.ref,
                 'title': self.title,
                 'prix': self.prix,
+                'surface': self.surface,
+                'piece': self.piece,
                 'typeVente': self.typeVente,
                 'ville': self.ville,
                 'codePostale': self.codePostale,
-                'img': self.img,
-                'surface': self.surface,
-                'piece': self.piece,
                 'annee': self.annee,
+                'img': self.img,
                 'description': self.description
             }
 

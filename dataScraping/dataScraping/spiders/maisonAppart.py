@@ -5,8 +5,7 @@ import re
 import logging
 
 DEBUG = False
-FIELDS = [
-    'id', 'ref','title', 'prix','typeVente','ville','codePostale','img','description', 'surface', 'piece', 'annee']
+FIELDS = ['ref','title', 'prix','typeVente','ville','codePostale','img','description', 'surface', 'piece', 'annee']
 
 class Door(CrawlSpider):
     name = 'maison'
@@ -29,7 +28,6 @@ class Door(CrawlSpider):
                        follow=True)
     rules = (rule_extract, rule_next)
 
-    index = 0
     ref = 0
     prix = 0
     title = ""
@@ -73,21 +71,19 @@ class Door(CrawlSpider):
                    './/div[@class="col-md-12 description-ann"]/p/text()').get()
           # print(codePostale)
         except:
-            print("error: ", self.index)
+            print("error: ")
         if getTitle != None:
-            self.index += 1
             data = {
-                'id': self.index,
                 'ref': self.ref,
                 'title': self.title,
                 'prix': self.prix,
+                'surface': self.surface,
+                'piece': self.piece,
                 'typeVente': self.typeVente,
                 'ville': self.ville,
                 'codePostale': self.codePostale,
-                'img': self.img,
-                'surface': self.surface,
-                'piece': self.piece,
                 'annee': self.annee,
+                'img': self.img,
                 'description': self.description
             }
 

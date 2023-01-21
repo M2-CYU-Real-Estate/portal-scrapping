@@ -7,10 +7,8 @@ import json
 class OuestFrance:
 
     filename = 'ouest.json'
-    #listCityCode = ["nice-06-06000", "marseille-13-13000","rennes-35-35000","paris-75-75000"]
-    listCityCode = ["paris-75-75000"]
-   # listIndexPage = [16, 4, 12]
-    listIndexPage = [4]
+    listCityCode = ["nice-06-06000", "marseille-13-13000","rennes-35-35000","paris-75-75000"]
+    listIndexPage = [16, 14, 45, 4]
 
 
     def cleanData(self,data):
@@ -23,7 +21,7 @@ class OuestFrance:
             file.write("[\n")
             for dic in list_of_dicts:
                 for ligne in dic:
-                    data = json.dumps(ligne)
+                    data = json.dumps(ligne, ensure_ascii=False)
                     file.write(data)
                     file.write(",\n")
             file.write("]\n")
@@ -44,14 +42,14 @@ class OuestFrance:
         listAnnonces = []
         print('start scrapping....')
         for index, container in enumerate(containers):
-            annonces = {}
             titre = container.find("span", {"class": "annTitre"})
             date = container.find("span", {"class": "annDebAff"})
             ville = container.find("span", {"class": "annVille"})
 
             if titre != None and ville !=None:
-                titre = self.cleanData( titre.text)
-                date =  self.cleanData(date.text)
+                titre = titre.text.split()
+                titre = " ".join(titre)
+                date = self.cleanData(date.text)
                 ville = self.cleanData(ville.text)
                 detailAnn = page_soup.findAll('a', class_='annLink')[index]
                 ann = detailAnn.get('href')
@@ -59,23 +57,32 @@ class OuestFrance:
                 page_soup2 = self.downloaPage(site)
                 listInfo = page_soup2.find("ul", {"class": "colGAnn"})
                 dictinfo = {}
-                for info in listInfo:
-                    if isinstance(info, NavigableString):
-                        continue
-                    if isinstance(info, Tag):
-                        if info.span != None and info.strong != None:
-                            key = info.span.text
-                            body = self.cleanData(info.strong.text)
-                            dictinfo[key] = body
+                if listInfo != None:
+                    for info in listInfo:
+                        if isinstance(info, NavigableString):
+                            continue
+                        if isinstance(info, Tag):
+                            if info.span != None and info.strong != None:
+                                key = info.span.text
+                                body = self.cleanData(info.strong.text)
+                                dictinfo[key] = body
+                else:
+                    pass
                 img = page_soup2.find('img', {"class": "lazy imgSlider"})
                 if img != None:
                     img = img.get('data-original')
-                ref = self.cleanData(page_soup2.find('span', {"class": "ref"}).text)
-                annonces={'id': index,'ref':ref, 'date':date, 'titre': titre, 'ville': ville,'codePostale':codePostale[2],
-                          'caracteristique': dictinfo, 'img':img}
-                listAnnonces.append(annonces)
-                print('scrapped annonce =>'+ str(index))
-
+                ref = page_soup2.find('span', {"class": "ref"})
+                if ref != None:
+                    ref = self.cleanData(ref.text)
+                if 'Prix' in dictinfo and 'Surf. habitable' in dictinfo and 'Pièces' in dictinfo:
+                    annonces = {'ref': ref, 'title': titre, 'prix': dictinfo['Prix'],
+                                'surface': dictinfo['Surf. habitable'], 'piece': dictinfo['Pièces'],
+                                'ville': ville, 'codePostale': codePostale[2], 'annee': date, 'img': img,
+                                'description': "avenir"}
+                    listAnnonces.append(annonces)
+                else:
+                    pass
+        print('scrapped annonce')
         return  listAnnonces
 
     def main(self):
@@ -85,8 +92,7 @@ class OuestFrance:
                 listAnnonces = self.scrapOuestAnnonces(cityCode,index)
                 listData.append(listAnnonces)
 
-        print(listData)
-        self.writeData(listData, self.filename)
+            self.writeData(listData, self.filename)
 
 if __name__ == '__main__':
     OuestFrance().main()

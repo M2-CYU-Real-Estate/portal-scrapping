@@ -6,7 +6,7 @@ import logging
 
 DEBUG = False
 FIELDS = [
-    'id','ref', 'title', 'prix','lots','typeVente','ville','codePostale','img','description', 'surface','annee']
+    'ref', 'title', 'prix','surface','lots','typeVente','ville','codePostale','img','description','annee']
 
 class Door(CrawlSpider):
     name = 'door'
@@ -30,7 +30,6 @@ class Door(CrawlSpider):
                        )
     rules = (rule_recipe, rule_next)
     ref = 0
-    index = 0
     prix = 0
     prixm2 = 0
     title = ""
@@ -70,20 +69,18 @@ class Door(CrawlSpider):
                 self.prix = re.sub('\W+','', self.prix)
            except:
                pass
-           self.index += 1
            data = {
-            'id': self.index,
             'ref': self.ref,
             'title': self.title,
             'prix': self.prix,
-            'typeVente': self.typeVente,
-            'ville': self.ville,
-            'codePostale': self.codePostale,
-            'img': self.img,
-            'surface': self.surface,
-            'piece': self.piece,
-            'annee': self.annee,
-            'description': self.description
+             'surface': self.surface,
+             'piece': self.piece,
+             'typeVente': self.typeVente,
+             'ville': self.ville,
+             'codePostale': self.codePostale,
+             'annee': self.annee,
+             'img': self.img,
+              'description': self.description
             }
 
            dataDic = {}

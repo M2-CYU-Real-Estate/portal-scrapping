@@ -6,7 +6,7 @@ import logging
 
 DEBUG = False
 FIELDS = [
-    'id','ref', 'title', 'prix','prixm2','typeVente','ville','codePostale','img','accommodation','description', 'surface', 'piece','etage', 'charge', 'annee']
+    'ref', 'title', 'prix','prixm2', 'surface', 'piece','typeVente','ville','codePostale','description','img', 'annee']
 
 
 class Door(CrawlSpider):
@@ -31,7 +31,6 @@ class Door(CrawlSpider):
                        follow=True)
     rules = (rule_extract, rule_next)
 
-    index = 0
     ref = 0
     prix = 0
     prixm2 = 0
@@ -42,12 +41,8 @@ class Door(CrawlSpider):
     ville=""
     codePostale=""
     surface=""
-    etage = ""
     annee = ""
-    charge = ""
     description=""
-    autrePiece= ""
-    accommodation = ""
     def parse_item(self, response):
         try:
             getTitle = response.xpath(
@@ -84,33 +79,21 @@ class Door(CrawlSpider):
 
                 self.img = response.xpath(
                     './/img[@class="SliderImages__ImgStyledSlider-sc-18z29ar-5 esrCRM adviewPhoto"]/@src').get()
-                listAccommodation = response.xpath(
-                    './/ul[@class="Professional__UlStyled-sc-133x9p4-6 gINLoU"]/li/text()').getall()
-                dictAccomodation = {}
-                if len(listAccommodation) >0:
-                    for i in len(listAccommodation)+1:
-                        dictAccomodation[listAccommodation[i+1]] = listAccommodation[i+2]
-                    self.accommodation = dictAccomodation
-                    print(self.accommodation)
         except:
-            print("error: ", self.index)
+            print("error")
         if self.title != None:
-            self.index += 1
             data = {
-                'id': self.index,
                 'ref': self.ref,
                 'title': self.title,
                 'prix': self.prix,
                 'prixm2': self.prixm2,
+                'surface': self.surface,
+                'piece': self.piece,
                 'typeVente': self.typeVente,
                 'ville': self.ville,
                 'codePostale': self.codePostale,
-                'img': self.img,
-                'surface': self.surface,
-                'piece': self.piece,
-                'etage': self.etage,
                 'annee': self.annee,
-                'charge': self.charge,
+                'img': self.img,
                 'description': self.description
             }
 
