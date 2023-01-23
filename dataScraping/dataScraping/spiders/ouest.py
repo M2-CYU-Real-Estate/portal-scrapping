@@ -7,8 +7,9 @@ import json
 class OuestFrance:
 
     filename = 'ouest.json'
-    listCityCode = ["nice-06-06000", "marseille-13-13000","rennes-35-35000","paris-75-75000"]
-    listIndexPage = [16, 14, 45, 4]
+    listCityCode = ["nice-06-06000", "marseille-13-13000","rennes-35-35000","paris-75-75000","nantes-44-44000",
+                    "lyon-69-69000", "lille-59-59000", "poissy-78-78300", "cannes-06-06150", "toulouse-31-31000"]
+    listIndexPage = [16, 14, 45, 4,10,140,2,1,3,16]
 
 
     def cleanData(self,data):
@@ -56,6 +57,9 @@ class OuestFrance:
                 site = "https://www.ouestfrance-immo.com" + ann
                 page_soup2 = self.downloaPage(site)
                 listInfo = page_soup2.find("ul", {"class": "colGAnn"})
+                desc = page_soup2.find("div", {"class": "txtAnn"})
+                if desc != None:
+                    desc = desc.text
                 dictinfo = {}
                 if listInfo != None:
                     for info in listInfo:
@@ -75,14 +79,14 @@ class OuestFrance:
                 if ref != None:
                     ref = self.cleanData(ref.text)
                 if 'Prix' in dictinfo and 'Surf. habitable' in dictinfo and 'Pièces' in dictinfo:
-                    annonces = {'ref': ref, 'title': titre, 'prix': dictinfo['Prix'],
+                    annonces = {'ref': ref, 'url':site, 'title': titre, 'prix': dictinfo['Prix'],
                                 'surface': dictinfo['Surf. habitable'], 'piece': dictinfo['Pièces'],
-                                'ville': ville, 'codePostale': codePostale[2], 'annee': date, 'img': img,
-                                'description': "avenir"}
+                                'ville': codePostale[0], 'codePostale': codePostale[2], 'annee': date, 'img': img,
+                                'description': desc}
                     listAnnonces.append(annonces)
                 else:
                     pass
-        print('scrapped annonce')
+            print('scrapped annonce', str(index))
         return  listAnnonces
 
     def main(self):

@@ -12,7 +12,7 @@ class Door(CrawlSpider):
     allowed_domains = ['www.maisonsetappartements.fr']
 
     start_urls = [
-        'https://www.maisonsetappartements.fr/views/Search.php?lang=fr&departement=&villes=38344,2123,32549,24744,4775,4776,4777,4778,4779,4780,4781,4784,4785,4786,4787,4788,4789,4790,14823,13171,13742,17979,2006&nb_km=&TypeAnnonce=VEN&TypeBien=&bdgMin=&bdgMax=&surfMin=&surfMax=&nb_piece=&keywords=&quartier=21173&page=1'
+        'https://www.maisonsetappartements.fr/views/Search.php?lang=fr&TypeAnnonce=VEN&TypeBien=&villes=17885,30283,30284,30285,30286,30287,30288,30289,30290,11197,2064&departement=4,5,44,69,75,76,92,93,94,95,13,33&quartier=&bdgMin=&bdgMax=&surfMin=&surfMax=&nb_piece=&nb_km=&keywords=&page=1'
     ]
 
     # first get the next button which will visit every page of a category

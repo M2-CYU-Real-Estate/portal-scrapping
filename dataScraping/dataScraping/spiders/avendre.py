@@ -6,7 +6,7 @@ import logging
 
 DEBUG = False
 FIELDS = [
-    'ref', 'title', 'prix','prixm2', 'surface', 'piece','typeVente','ville','codePostale','description','img', 'annee']
+    'ref', 'url', 'title', 'prix','prixm2', 'surface', 'piece','typeVente','ville','codePostale','description','img', 'annee']
 
 
 class Door(CrawlSpider):
@@ -14,8 +14,7 @@ class Door(CrawlSpider):
     allowed_domains = ['www.avendrealouer.fr']
 
     start_urls = [
-        'https://www.avendrealouer.fr/recherche.html?pageIndex=1&sortPropertyName=ReleaseDate&sortDirection=Descending&searchTypeID=1&type'
-        'GroupCategoryID=1&localityIds=2-11,2-52,2-23,2-25,2-24,101-2310,2-53,2-94&typeGroupIds=1,2,10,11&hasAlert=unknow?page=1'
+      'https://www.avendrealouer.fr/recherche.html?pageIndex=1&sortPropertyName=ReleaseDate&sortDirection=Descending&searchTypeID=1&typeGroupCategoryID=1&localityIds=3-95,3-87,3-94,101-34667,3-75,2-52,2-93,3-5,2-23,2-25,3-51,3-13,3-59,2-82,3-44&typeGroupIds=1,2,10,11,12&hasAlert=unknow'
     ]
 
     # first get the next button which will visit every page of a category
@@ -35,6 +34,7 @@ class Door(CrawlSpider):
     prix = 0
     prixm2 = 0
     title = ""
+    url = ""
     img=""
     typeVente = ""
     piece=""
@@ -49,6 +49,7 @@ class Door(CrawlSpider):
                     './/div[@class="Criteria__DivStyledHead-sc-1ftsbop-0 gHTUJJ"]/h1/text()').get()
             self.title = getTitle
             if(self.title != None):
+                self.url = response.url
                 getRef = response.xpath(
                     './/div[@class="Professional__DivStyledRef-sc-133x9p4-2 jGNyhI"]/text()').getall()
                 self.ref = getRef[2]
@@ -84,6 +85,7 @@ class Door(CrawlSpider):
         if self.title != None:
             data = {
                 'ref': self.ref,
+                'url': self.url,
                 'title': self.title,
                 'prix': self.prix,
                 'prixm2': self.prixm2,

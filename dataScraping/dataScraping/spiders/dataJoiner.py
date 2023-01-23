@@ -2,7 +2,7 @@ import json
 
 class Join:
     file = "dataJoined.json"
-    files = ["avendre.json","doorInsider.json", "immoRegion.json", "maisonAppart.json", "ouest.json"]
+    files = ["avendre.json","doorInsider.json", "maisonAppart.json","immoRegion.json", "ouest.json"]
 
     def writeData(self,listData, filename):
         with open(filename, 'w', encoding='utf-8') as file:

@@ -6,7 +6,7 @@ import logging
 
 DEBUG = False
 FIELDS = [
-    'id','ref', 'title', 'prix','typeVente','ville','codePostale','img','description', 'surface', 'piece','etage', 'annee']
+    'id', 'url', 'ref', 'title', 'prix','typeVente','ville','codePostale','img','description', 'surface', 'piece','etage', 'annee']
 
 class Door(CrawlSpider):
     name = 'immo'
@@ -32,6 +32,7 @@ class Door(CrawlSpider):
     ref = 0
     prix = 0
     title = ""
+    url = "",
     img=""
     typeVente = ""
     piece=""
@@ -46,6 +47,7 @@ class Door(CrawlSpider):
                 './/h1[@class="KeyInfoBlockStyle__PdpTitle-sc-1o1h56e-2 ilPGib"]/text()').get()
             self.title = getTitle
             if getTitle != None:
+                self.url = response.url
                 getTitle = getTitle.split()
                 self.typeVente = getTitle[0]
                 self.ref = response.xpath(
@@ -72,6 +74,7 @@ class Door(CrawlSpider):
         if self.title != None:
             data = {
                 'ref': self.ref,
+                 'url': self.url,
                 'title': self.title,
                 'prix': self.prix,
                 'surface': self.surface,
