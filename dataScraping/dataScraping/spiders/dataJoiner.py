@@ -1,17 +1,18 @@
 import json
+import csv
+
 
 class Join:
-    file = "dataJoined.json"
     files = ["avendre.json","doorInsider.json", "maisonAppart.json","immoRegion.json", "ouest.json"]
 
-    def writeData(self,listData, filename):
-        with open(filename, 'w', encoding='utf-8') as file:
-            file.write("[\n")
-            for ligne in listData:
-                data = json.dumps(ligne, ensure_ascii=False)
-                file.write(data)
-                file.write(",\n")
-            file.write("]\n")
+    def writeData(self,listData):
+        print(listData[0])
+        keys = listData[0].keys()
+
+        with open('dataJoined.csv', 'w', newline='', encoding='utf-8') as output_file:
+            dict_writer = csv.DictWriter(output_file, keys)
+            dict_writer.writeheader()
+            dict_writer.writerows(listData)
 
     def readFile(self, fileName):
         with open(fileName, encoding='utf-8') as json_file:
@@ -30,7 +31,8 @@ class Join:
     def main(self):
         data = self.joinData()
         data = sum(data, [])
-        self.writeData(data, self.file)
+        print(len(data))
+        self.writeData(data)
 
 if __name__ == '__main__':
     Join().main()

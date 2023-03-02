@@ -51,7 +51,6 @@ class OuestFrance:
                 titre = titre.text.split()
                 titre = " ".join(titre)
                 date = self.cleanData(date.text)
-                ville = self.cleanData(ville.text)
                 detailAnn = page_soup.findAll('a', class_='annLink')[index]
                 ann = detailAnn.get('href')
                 site = "https://www.ouestfrance-immo.com" + ann
@@ -83,6 +82,7 @@ class OuestFrance:
                                 'surface': dictinfo['Surf. habitable'], 'piece': dictinfo['Pièces'],
                                 'ville': codePostale[0], 'codePostale': codePostale[2], 'annee': date, 'img': img,
                                 'description': desc}
+                    print(annonces)
                     listAnnonces.append(annonces)
                 else:
                     pass

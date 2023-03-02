@@ -6,7 +6,7 @@ import logging
 
 DEBUG = False
 FIELDS = [
-    'ref', 'title', 'prix','surface','lots','typeVente','ville','codePostale','img','description','annee']
+    'ref', 'title', 'url', 'prix','surface','lots','typeVente','ville','codePostale','img','description','annee']
 
 class Door(CrawlSpider):
     name = 'door'
@@ -30,6 +30,7 @@ class Door(CrawlSpider):
                        )
     rules = (rule_recipe, rule_next)
     ref = 0
+    url = ""
     prix = 0
     prixm2 = 0
     title = ""
@@ -44,6 +45,7 @@ class Door(CrawlSpider):
     def parse_item(self, response):
            self.ref =  response.xpath('.//div[@class="property-header-type-address-type-ref"]/text()').getall()
            self.ref = re.sub('\W+','', self.ref[1])
+           self.url = response.url
            self.title = response.css('h1.page-title::text').get()
            self.typeVente = response.xpath('.//div[@class="field field--name-field-type-property field--type-entity-reference field--label-visually_hidden"]/div/text()').getall()
            self.typeVente = self.typeVente[1]
@@ -71,6 +73,7 @@ class Door(CrawlSpider):
                pass
            data = {
             'ref': self.ref,
+            'url': self.url,
             'title': self.title,
             'prix': self.prix,
              'surface': self.surface,

@@ -5,7 +5,7 @@ import re
 import logging
 
 DEBUG = False
-FIELDS = ['ref','title', 'prix','typeVente','ville','codePostale','img','description', 'surface', 'piece', 'annee']
+FIELDS = ['ref','title', 'url','prix','typeVente','ville','codePostale','img','description', 'surface', 'piece', 'annee']
 
 class Door(CrawlSpider):
     name = 'maison'
@@ -30,6 +30,7 @@ class Door(CrawlSpider):
 
     ref = 0
     prix = 0
+    url = ""
     title = ""
     img=""
     typeVente = ""
@@ -47,6 +48,7 @@ class Door(CrawlSpider):
                ref = response.xpath(
                    './/span[@class="d-block d-md-inline mt-1 mt-md-0"]/text()')[-1].get()
                self.ref =  re.sub('\W+', '', ref)
+               self.url = response.url
                self.title = getTitle
                getTitle = getTitle.split(" ")
                self.typeVente = getTitle[0] + " " + getTitle[1]
@@ -76,6 +78,7 @@ class Door(CrawlSpider):
             data = {
                 'ref': self.ref,
                 'title': self.title,
+                'url': self.url,
                 'prix': self.prix,
                 'surface': self.surface,
                 'piece': self.piece,
